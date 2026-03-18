@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
 import { UserNav } from '@/components/layout/user-nav';
 import { Sidebar } from '@/components/layout/sidebar';
@@ -61,14 +61,16 @@ export default function DashboardLayout({
 
 	return (
 		<div className='flex min-h-screen w-full relative z-0'>
-				<Sidebar
-					fixed
-					className={
-						sidebarVisible
-							? 'transition-transform duration-200'
-							: 'transition-transform duration-200 md:-translate-x-full'
-					}
-				/>
+				<Suspense fallback={<div className="w-64 border-r bg-background h-screen shrink-0 hidden md:block" />}>
+					<Sidebar
+						fixed
+						className={
+							sidebarVisible
+								? 'transition-transform duration-200'
+								: 'transition-transform duration-200 md:-translate-x-full'
+						}
+					/>
+				</Suspense>
 				{/* Mobile sidebar (temporary) */}
 					{mobileOpen && (
 						<div className='fixed inset-0 z-40 flex md:hidden'>
@@ -77,7 +79,9 @@ export default function DashboardLayout({
 								onClick={() => setMobileOpen(false)}
 							/>
 							<div className='relative z-50 w-64 border-r bg-background'>
-								<Sidebar mobile onNavigate={() => setMobileOpen(false)} />
+								<Suspense fallback={<div className="w-64 h-full bg-background" />}>
+									<Sidebar mobile onNavigate={() => setMobileOpen(false)} />
+								</Suspense>
 							</div>
 						</div>
 					)}

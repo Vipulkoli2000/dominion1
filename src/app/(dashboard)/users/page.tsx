@@ -1,7 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { useMemo, useState, useEffect } from 'react';
+import { Suspense, useMemo, useState, useEffect } from 'react';
 import { apiGet } from '@/lib/api-client';
 import { toast } from '@/lib/toast';
 import { Pagination } from '@/components/common/pagination';
@@ -60,7 +60,7 @@ function getRoleLabel(roleValue: string): string {
 	return roleValue.charAt(0).toUpperCase() + roleValue.slice(1);
 }
 
-export default function UsersPage() {
+function UsersPageContent() {
 	const [qp, setQp] = useQueryParamsState({
 		page: 1,
 		perPage: 10,
@@ -351,5 +351,13 @@ export default function UsersPage() {
 				/>
 			</AppCard.Footer>
 		</AppCard>
+	);
+}
+
+export default function UsersPage() {
+	return (
+		<Suspense fallback={<div className="p-6">Loading users...</div>}>
+			<UsersPageContent />
+		</Suspense>
 	);
 }
