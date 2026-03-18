@@ -2,16 +2,16 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  CommandDialog, 
-  CommandInput, 
-  CommandList, 
-  CommandEmpty, 
-  CommandGroup, 
-  CommandItem 
+import {
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem
 } from '@/components/ui/command';
 import { Button } from '@/components/ui/button';
-import { Search, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight, Building2, LayoutDashboard, Briefcase, CheckSquare, Users } from 'lucide-react';
 import { NAV_ITEMS, NavItem, NavGroupItem, NavLeafItem } from '@/config/nav';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { ROLES_PERMISSIONS, ROLES } from '@/config/roles';
@@ -60,9 +60,9 @@ export function GlobalSearch() {
   // Filter items based on search
   const filteredItems = useMemo(() => {
     if (!search) return searchableItems;
-    
+
     const query = search.toLowerCase();
-    return searchableItems.filter(item => 
+    return searchableItems.filter(item =>
       item.title.toLowerCase().includes(query) ||
       item.fullPath.toLowerCase().includes(query) ||
       (item.group && item.group.toLowerCase().includes(query))
@@ -72,7 +72,7 @@ export function GlobalSearch() {
   // Group filtered items
   const groupedItems = useMemo(() => {
     const groups: Record<string, SearchableItem[]> = {};
-    
+
     filteredItems.forEach(item => {
       const groupName = item.group || 'Navigation';
       if (!groups[groupName]) {
@@ -80,7 +80,7 @@ export function GlobalSearch() {
       }
       groups[groupName].push(item);
     });
-    
+
     return groups;
   }, [filteredItems]);
 
@@ -120,20 +120,44 @@ export function GlobalSearch() {
         <span className="sr-only">Search</span>
       </Button>
 
-      <CommandDialog 
-        open={open} 
+      <CommandDialog
+        open={open}
         onOpenChange={setOpen}
         title="Search Navigation"
         description="Search for pages and features"
       >
-        <CommandInput 
-          placeholder="Search navigation..." 
+        <CommandInput
+          placeholder="Search navigation..."
           value={search}
           onValueChange={setSearch}
         />
-        <CommandList>
+        <CommandList className="max-h-[450px]">
+          {/* Dominion Branding Header */}
+
+
+          {!search && (
+            <CommandGroup heading="Quick Access">
+              <CommandItem onSelect={() => handleSelect('/dashboard')} className="flex items-center gap-3 px-3 py-2 cursor-pointer">
+                <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
+                <span className="font-medium">Dashboard</span>
+              </CommandItem>
+              <CommandItem onSelect={() => handleSelect('/pipeline-projects')} className="flex items-center gap-3 px-3 py-2 cursor-pointer">
+                <Briefcase className="h-4 w-4 text-muted-foreground" />
+                <span className="font-medium">Pipeline Projects</span>
+              </CommandItem>
+              <CommandItem onSelect={() => handleSelect('/tasks')} className="flex items-center gap-3 px-3 py-2 cursor-pointer">
+                <CheckSquare className="h-4 w-4 text-muted-foreground" />
+                <span className="font-medium">Tasks</span>
+              </CommandItem>
+              <CommandItem onSelect={() => handleSelect('/users')} className="flex items-center gap-3 px-3 py-2 cursor-pointer">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span className="font-medium">Users</span>
+              </CommandItem>
+            </CommandGroup>
+          )}
+
           <CommandEmpty>No results found.</CommandEmpty>
-          
+
           {Object.entries(groupedItems).map(([groupName, items]) => (
             <CommandGroup key={groupName} heading={groupName}>
               {items.map((item) => {
