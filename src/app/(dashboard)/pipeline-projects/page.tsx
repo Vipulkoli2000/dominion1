@@ -5,9 +5,19 @@ import { FilterBar } from '@/components/common';
 import { AppButton } from '@/components/common/app-button';
 import { NonFormTextInput } from '@/components/common/non-form-text-input';
 import { useState } from 'react';
-import { Edit, Trash2 } from 'lucide-react';
+import { 
+  Edit, Trash2, MoreHorizontal, FileText, 
+  CheckCircle, RefreshCcw, FileSignature, ArrowRightLeft 
+} from 'lucide-react';
 import Link from 'next/link';
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 const DUMMY_RECORDS = [
   {
     id: 1,
@@ -303,22 +313,40 @@ export default function PipelineProjectsPage() {
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">{record.revision}</td>
                     <td className="px-4 py-3">
-                      <div className="flex flex-col gap-1 w-max">
-                        <div className="flex gap-1">
-                          <button className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 text-[11px] font-medium px-2 py-0.5 rounded transition-colors ring-1 ring-inset ring-orange-500/20">Convert</button>
-                          <button className="bg-destructive/10 hover:bg-destructive/20 text-destructive text-[11px] font-medium px-2 py-0.5 rounded transition-colors ring-1 ring-inset ring-destructive/20">Closed</button>
-                          <button className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 text-[11px] font-medium px-2 py-0.5 rounded transition-colors ring-1 ring-inset ring-emerald-500/20">Followups</button>
-                        </div>
-                        <div className="flex gap-1 mt-0.5">
-                          <button className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 text-[11px] font-medium px-2 py-0.5 rounded transition-colors ring-1 ring-inset ring-emerald-500/20">Revisions</button>
-                          <button className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded transition-colors ring-1 ring-inset ring-blue-500/20">Quotation</button>
-                          <button className="text-muted-foreground hover:text-primary transition-colors p-1 rounded-sm hover:bg-muted">
-                            <Edit className="h-3.5 w-3.5" />
-                          </button>
-                          <button className="text-muted-foreground hover:text-destructive transition-colors p-1 rounded-sm hover:bg-muted">
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
+                      <div className="flex items-center justify-end gap-1.5 w-max">
+                        <button className="text-muted-foreground shadow-sm bg-white border border-border/50 hover:border-primary/50 hover:text-primary transition-colors p-1.5 rounded-md hover:bg-primary/5" title="Edit row">
+                          <Edit className="h-3.5 w-3.5" />
+                        </button>
+                        <button className="text-muted-foreground shadow-sm bg-white border border-border/50 hover:border-destructive/50 hover:text-destructive transition-colors p-1.5 rounded-md hover:bg-destructive/5" title="Delete row">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="text-muted-foreground shadow-sm bg-white border border-border/50 hover:border-border hover:text-foreground transition-colors p-1.5 rounded-md hover:bg-muted" title="More Actions">
+                              <MoreHorizontal className="h-3.5 w-3.5" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-[180px] text-xs font-medium">
+                            <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">Manage Project</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-orange-600 focus:text-orange-600 focus:bg-orange-50">
+                              <ArrowRightLeft className="w-3.5 h-3.5" /> Convert Project
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">
+                              <CheckCircle className="w-3.5 h-3.5" /> Mark Closed
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-emerald-600 focus:text-emerald-600 focus:bg-emerald-50">
+                              <RefreshCcw className="w-3.5 h-3.5" /> View Followups
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-emerald-600 focus:text-emerald-600 focus:bg-emerald-50">
+                              <FileText className="w-3.5 h-3.5" /> View Revisions
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-blue-600 focus:text-blue-600 focus:bg-blue-50">
+                              <FileSignature className="w-3.5 h-3.5" /> Quotation Options
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </td>
                   </tr>

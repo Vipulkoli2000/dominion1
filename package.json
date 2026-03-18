@@ -7,7 +7,7 @@
     "dev:turbo": "next dev --turbopack",
     "build": "next build",
     "build:turbo": "next build --turbopack",
-    "start": "next start",
+    "start": "npx -y serve@latest out",
     "lint": "eslint"
   },
   "dependencies": {
