@@ -13,6 +13,7 @@ import {
 import { AppCard } from '../common/app-card';
 import { AppButton } from '../common/app-button';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 // --- Dummy Data ---
 // Overlapping Area Data (Quotations vs Invoices Counts)

@@ -54,10 +54,10 @@ export function UserNav() {
   async function handleLogout() {
     try {
       setLoadingLogout(true);
-      await fetch("/api/auth/logout", { method: "POST" });
+      // Mocking logout for frontend-only
+      console.log('Logging out...');
+      await new Promise(resolve => setTimeout(resolve, 500));
       router.push("/login");
-  } catch {
-      // silent for now
     } finally {
       setLoadingLogout(false);
     }

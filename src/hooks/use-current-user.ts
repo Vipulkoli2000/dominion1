@@ -1,32 +1,26 @@
 // SWR hook for current authenticated user (session state). Returns { user, error, isLoading, mutate }.
 // Source of truth for role/permissions resolution client-side.
+// MOCKED for frontend-only project.
 "use client";
 
-import useSWR from "swr";
 import { CurrentUser } from "@/types";
-import { apiGet } from "@/lib/api-client";
-
-const fetcher = () => apiGet<CurrentUser>("/api/users/me");
 
 export function useCurrentUser() {
-  const { data, error, isLoading, mutate } = useSWR<CurrentUser>(
-    "/api/users/me",
-    fetcher,
-    {
-      shouldRetryOnError: false,
-      // Revalidate aggressively to avoid stale role/permissions after auth changes
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-      revalidateIfStale: true,
-      refreshInterval: 0,
-      dedupingInterval: 0,
-      focusThrottleInterval: 0
-    }
-  );
+  // Mocked user for frontend-only usage
+  const data: CurrentUser = {
+    id: 1,
+    name: "Admin User",
+    email: "admin@dominion.com",
+    role: "admin",
+    profilePhoto: null,
+    status: true,
+    lastLogin: new Date()
+  };
+
   return {
-    user: data ?? null,
-    error,
-    isLoading,
-    mutate
+    user: data,
+    error: null,
+    isLoading: false,
+    mutate: async () => {} 
   };
 }

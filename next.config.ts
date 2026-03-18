@@ -50,7 +50,8 @@ const nextConfig: NextConfig = {
         hostname: "localhost",
       },
     ],
-    unoptimized: process.env.NODE_ENV === "development",
+    unoptimized: true,
+
   },
   eslint: {
     ignoreDuringBuilds: true,

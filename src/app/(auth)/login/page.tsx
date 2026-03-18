@@ -15,7 +15,7 @@ import { AppCheckbox } from '@/components/common/app-checkbox';
 
 const FormSchema = z.object({
 	email: z.string().email({ message: 'Please enter a valid email address.' }),
-	password: z.string().min(1, { message: 'Password is required.' }),
+	password: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
 	remember: z.boolean().optional().default(false),
 });
 
@@ -32,11 +32,16 @@ export default function LoginPage() {
 
 	async function onSubmit(data: z.infer<typeof FormSchema>) {
 		try {
-			await apiPost('/api/auth/login', data, { showErrorToast: true });
+			// Mocking login for frontend-only project
+			console.log('Logging in with:', data);
+			
+			// Simulate a small delay
+			await new Promise(resolve => setTimeout(resolve, 500));
+			
 			toast.success('Login Successful', { description: 'Welcome back!' });
 			router.push('/dashboard');
 		} catch {
-			// toast already shown by api-client
+			toast.error('Login failed. Please try again.');
 		}
 	}
 
