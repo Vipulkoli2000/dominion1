@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  transpilePackages: ["framer-motion"],
 };
 
 export default nextConfig;

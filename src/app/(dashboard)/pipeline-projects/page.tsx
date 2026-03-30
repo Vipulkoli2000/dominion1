@@ -5,6 +5,7 @@ import { FilterBar } from '@/components/common';
 import { AppButton } from '@/components/common/app-button';
 import { NonFormTextInput } from '@/components/common/non-form-text-input';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   Edit, Trash2, MoreHorizontal, FileText, 
   CheckCircle, RefreshCcw, FileSignature, ArrowRightLeft 
@@ -214,6 +215,7 @@ const DUMMY_RECORDS = [
 export default function PipelineProjectsPage() {
   const [searchDraft, setSearchDraft] = useState('');
   const [search, setSearch] = useState('');
+  const router = useRouter();
 
   // Client-side filtering logic based on the committed search state
   const filteredRecords = DUMMY_RECORDS.filter(record => {
@@ -297,7 +299,11 @@ export default function PipelineProjectsPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {filteredRecords.map((record) => (
-                  <tr key={record.id} className="hover:bg-muted/50 transition-colors group">
+                  <tr 
+                    key={record.id} 
+                    className="hover:bg-muted/50 transition-colors group cursor-pointer"
+                    onClick={() => router.push(`/pipeline-projects/${record.id}`)}
+                  >
                     <td className="px-4 py-3 font-medium text-foreground">
                       {record.quotationNo}
                     </td>
@@ -315,7 +321,7 @@ export default function PipelineProjectsPage() {
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">{record.revision}</td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1.5 w-max">
+                      <div className="flex items-center justify-end gap-1.5 w-max" onClick={(e) => e.stopPropagation()}>
                         <button className="text-muted-foreground shadow-sm bg-white border border-border/50 hover:border-primary/50 hover:text-primary transition-colors p-1.5 rounded-md hover:bg-primary/5" title="Edit row">
                           <Edit className="h-3.5 w-3.5" />
                         </button>
@@ -331,8 +337,8 @@ export default function PipelineProjectsPage() {
                           <DropdownMenuContent align="end" className="w-[180px] text-xs font-medium">
                             <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">Manage Project</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-orange-600 focus:text-orange-600 focus:bg-orange-50">
-                              <ArrowRightLeft className="w-3.5 h-3.5" /> Convert Project
+                            <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-orange-600 focus:text-orange-600 focus:bg-orange-50" onClick={() => router.push(`/pipeline-projects/${record.id}`)}>
+                              <ArrowRightLeft className="w-3.5 h-3.5" /> View Details
                             </DropdownMenuItem>
                             <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">
                               <CheckCircle className="w-3.5 h-3.5" /> Mark Closed
