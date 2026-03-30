@@ -306,10 +306,12 @@ export default function PipelineProjectsPage() {
                     <td className="px-4 py-3 text-muted-foreground max-w-[250px] leading-snug">{record.siteName || '—'}</td>
                     <td className="px-4 py-3 text-foreground text-right tabular-nums">{record.finalAmount || '—'}</td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex items-center rounded-sm bg-primary/10 px-2 py-[2px] text-[11px] font-medium text-primary ring-1 ring-inset ring-primary/20">
-                        {record.preparedBy.name}
-                      </span>
-                      <div className="text-[11px] text-muted-foreground mt-1 tracking-tight">{record.preparedBy.date}</div>
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="h-7 w-7 rounded-full bg-primary/10 text-primary text-[11px] font-semibold flex items-center justify-center ring-1 ring-primary/20 cursor-pointer hover:bg-primary/20 transition-colors" title={record.preparedBy.name}>
+                          {record.preparedBy.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground tracking-tight">{record.preparedBy.date}</div>
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">{record.revision}</td>
                     <td className="px-4 py-3">

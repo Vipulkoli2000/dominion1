@@ -198,10 +198,10 @@ function UsersPageContent() {
 			sortable: true,
 			className: 'text-right whitespace-nowrap',
 			cellClassName: 'text-right tabular-nums whitespace-nowrap',
-			accessor: () => {
-				const min = 15000;
-				const max = 1000000;
-				const amount = Math.floor(Math.random() * (max - min + 1)) + min;
+			accessor: (r) => {
+				// Use ID to generate deterministic amount (avoids hydration mismatch)
+				const base = (r.id * 123456) % 985000;
+				const amount = 15000 + base;
 				return formatCurrency(amount);
 			},
 		},

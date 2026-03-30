@@ -3,13 +3,14 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { NAV_ITEMS, NavItem, NavGroupItem, NavLeafItem } from "@/config/nav";
+import { NAV_ITEMS, NavItem, NavGroupItem, NavLeafItem, NavStaticItem, isStatic } from "@/config/nav";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { ROLES_PERMISSIONS, ROLES } from "@/config/roles";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronRight, Building2 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { GlobalSearch } from "@/components/common/global-search";
+import { motion, AnimatePresence } from "framer-motion";
 
 type SidebarProps = {
   fixed?: boolean;
@@ -60,12 +61,20 @@ export function Sidebar({
       return items
         .map((item) => {
           if (isGroup(item)) {
+            // Check if group itself requires a permission
+            if (item.permission && !permissionSet.has(item.permission)) {
+              return null;
+            }
             const filteredChildren = filterNavItems(item.children) as (
               | NavLeafItem
               | NavGroupItem
+              | NavStaticItem
             )[];
             if (filteredChildren.length === 0) return null;
             return { ...item, children: filteredChildren } as NavGroupItem;
+          }
+          if (isStatic(item)) {
+            return item; // Static items don't require permissions
           }
           return permissionSet.has(item.permission) ? item : null;
         })
@@ -81,11 +90,14 @@ export function Sidebar({
     currentSearchParams: ReturnType<typeof useSearchParams> | URLSearchParams
   ) => {
     function checkActiveInChildren(
-      children: (NavLeafItem | NavGroupItem)[]
+      children: (NavLeafItem | NavGroupItem | NavStaticItem)[]
     ): boolean {
       return children.some((c) => {
         if (isGroup(c)) {
           return checkActiveInChildren(c.children);
+        }
+        if (isStatic(c)) {
+          return false; // Static items don't have href, can't be active
         }
         try {
           // Parse hrefs to handle query parameters
@@ -163,7 +175,7 @@ export function Sidebar({
     items.forEach((item) => {
       if (isGroup(item)) {
         hrefs.push(...getAllLeafHrefs(item.children));
-      } else {
+      } else if (!isStatic(item)) {
         hrefs.push(item.href);
       }
     });
@@ -201,11 +213,13 @@ export function Sidebar({
                 : ""
             )}
           >
-            <button
+            <motion.button
               type="button"
               onClick={toggle}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               className={cn(
-                "w-full flex items-center gap-2 rounded-md px-4 py-2 text-left transition-colors outline-none focus:ring-2 focus:ring-ring hover:text-primary",
+                "w-full flex items-center gap-2 rounded-md px-4 py-2 text-left transition-colors outline-none focus:ring-2 focus:ring-ring hover:bg-primary/10 hover:text-primary",
                 depth > 0 ? "font-medium text-sm" : "font-semibold text-sm",
                 childActive ? "text-primary" : "text-muted-foreground"
               )}
@@ -216,29 +230,85 @@ export function Sidebar({
             >
               <GroupIcon className="h-4 w-4" />
               <span className="flex-1 truncate text-left">{item.title}</span>
-              {open ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
+              <motion.div
+                animate={{ rotate: open ? 90 : 0 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
+              >
                 <ChevronRight className="h-4 w-4" />
-              )}
-            </button>
+              </motion.div>
+            </motion.button>
           </div>
-          <div
-            className={cn(
-              "ml-0 transition-all duration-200 ease-in-out",
-              open
-                ? "mt-1 mb-2 max-h-[1000px] opacity-100"
-                : "max-h-0 opacity-0 overflow-hidden"
+          <AnimatePresence initial={false}>
+            {open && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ 
+                  duration: 0.2, 
+                  ease: [0.25, 0.46, 0.45, 0.94] // Smoother easing
+                }}
+                className="ml-0 overflow-hidden"
+                aria-hidden={!open}
+              >
+                <motion.ul 
+                  className="space-y-1 pt-0.5 pb-1"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                      opacity: 1,
+                      transition: {
+                        staggerChildren: 0.03,
+                        delayChildren: 0.02,
+                      },
+                    },
+                  }}
+                >
+                  {item.children.map((child, childIdx) =>
+                    renderNavItem(child, childIdx, depth + 1, item.children)
+                  )}
+                </motion.ul>
+              </motion.div>
             )}
-            aria-hidden={!open}
-          >
-            <ul className="space-y-1 pt-0.5">
-              {item.children.map((child, childIdx) =>
-                renderNavItem(child, childIdx, depth + 1, item.children)
-              )}
-            </ul>
-          </div>
+          </AnimatePresence>
         </li>
+      );
+    }
+
+    // Static item (non-clickable)
+    if (isStatic(item)) {
+      const StaticIcon = item.icon;
+      return (
+        <motion.li
+          key={`static-${item.title}-${idx}`}
+          variants={{
+            hidden: { x: -15, opacity: 0, scale: 0.95 },
+            visible: { 
+              x: 0, 
+              opacity: 1, 
+              scale: 1,
+              transition: {
+                duration: 0.2,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }
+            },
+          }}
+          className={cn("transition-all duration-200", separatorClass)}
+        >
+          <motion.div
+            whileHover={{ x: 3, scale: 1.01 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="group flex items-center gap-2 rounded-md pr-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors relative cursor-pointer hover:bg-primary/10 hover:text-primary"
+            style={{
+              paddingLeft: depth > 0 ? `${2.25 + depth * 0.75}rem` : "2.25rem",
+            }}
+          >
+            {StaticIcon && <StaticIcon className="h-4 w-4" />}
+            <span className="truncate">{item.title}</span>
+          </motion.div>
+        </motion.li>
       );
     }
 
@@ -298,21 +368,34 @@ export function Sidebar({
     }
 
     return (
-      <li
+      <motion.li
         key={leaf.href}
-        className={cn("transition-all duration-300", separatorClass)}
+        variants={{
+          hidden: { x: -15, opacity: 0, scale: 0.95 },
+          visible: { 
+            x: 0, 
+            opacity: 1, 
+            scale: 1,
+            transition: {
+              duration: 0.2,
+              ease: [0.25, 0.46, 0.45, 0.94]
+            }
+          },
+        }}
+        className={cn("transition-all duration-200", separatorClass)}
       >
         <Link
           href={leaf.href}
           onClick={() => onNavigate?.()}
           className={cn(
-            "group flex items-center rounded-md pr-3 py-1.5 text-sm font-medium transition-colors relative",
+            "group flex items-center gap-2 rounded-md pr-3 py-1.5 text-sm font-medium transition-colors relative hover:bg-primary/10",
             active ? "text-primary" : "text-muted-foreground hover:text-primary"
           )}
           style={{
             paddingLeft: depth > 0 ? `${2.25 + depth * 0.75}rem` : "2.25rem",
           }}
         >
+          {ActiveIcon && <ActiveIcon className="h-4 w-4" />}
           <span className="truncate">{leaf.title}</span>
           {/* Left accent bar */}
           <span
@@ -325,7 +408,7 @@ export function Sidebar({
             }}
           />
         </Link>
-      </li>
+      </motion.li>
     );
   }
 

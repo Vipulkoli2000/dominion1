@@ -8,6 +8,7 @@ import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { useProtectPage } from '@/hooks/use-protect-page';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // user fetching handled by useCurrentUser hook
 
@@ -72,19 +73,37 @@ export default function DashboardLayout({
 					/>
 				</Suspense>
 				{/* Mobile sidebar (temporary) */}
+				<AnimatePresence>
 					{mobileOpen && (
-						<div className='fixed inset-0 z-40 flex md:hidden'>
-							<div
+						<motion.div 
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							transition={{ duration: 0.15 }}
+							className='fixed inset-0 z-40 flex md:hidden'
+						>
+							<motion.div
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								transition={{ duration: 0.15 }}
 								className='absolute inset-0 bg-background/80 backdrop-blur-sm'
 								onClick={() => setMobileOpen(false)}
 							/>
-							<div className='relative z-50 w-64 border-r bg-background'>
+							<motion.div 
+								initial={{ x: -50, opacity: 0 }}
+								animate={{ x: 0, opacity: 1 }}
+								exit={{ x: -50, opacity: 0 }}
+								transition={{ duration: 0.15, ease: "easeOut" }}
+								className='relative z-50 w-64 border-r bg-background'
+							>
 								<Suspense fallback={<div className="w-64 h-full bg-background" />}>
 									<Sidebar mobile onNavigate={() => setMobileOpen(false)} />
 								</Suspense>
-							</div>
-						</div>
+							</motion.div>
+						</motion.div>
 					)}
+				</AnimatePresence>
 				<div
 					className={`flex flex-1 flex-col min-w-0 transition-[margin-left] duration-200 ${
 						sidebarVisible ? 'md:ml-64' : 'md:ml-0'

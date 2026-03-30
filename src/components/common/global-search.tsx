@@ -11,14 +11,19 @@ import {
   CommandItem
 } from '@/components/ui/command';
 import { Button } from '@/components/ui/button';
-import { Search, ArrowRight, Building2, LayoutDashboard, Briefcase, CheckSquare, Users } from 'lucide-react';
-import { NAV_ITEMS, NavItem, NavGroupItem, NavLeafItem } from '@/config/nav';
+import { Search, ArrowRight, Building2, LayoutDashboard, Briefcase, CheckSquare, Users, Eye } from 'lucide-react';
+import { NAV_ITEMS, NavItem, NavGroupItem, NavStaticItem, isStatic } from '@/config/nav';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { ROLES_PERMISSIONS, ROLES } from '@/config/roles';
+import { cn } from '@/lib/utils';
 
-interface SearchableItem extends NavLeafItem {
+interface SearchableItem {
+  title: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  href?: string;
   group?: string;
   fullPath: string;
+  isStatic?: boolean;
 }
 
 export function GlobalSearch() {
@@ -41,13 +46,30 @@ export function GlobalSearch() {
         if (isGroup(item)) {
           const currentPath = parentPath ? `${parentPath} > ${item.title}` : item.title;
           const currentGroup = parentGroup || item.title;
-          processNavItems(item.children, currentPath, currentGroup);
-        } else if (permissionSet.has(item.permission)) {
+          // Add the group itself as a searchable item (if user has permission)
+          if (!item.permission || permissionSet.has(item.permission)) {
+            processNavItems(item.children, currentPath, currentGroup);
+          }
+        } else if (isStatic(item)) {
+          // Static items are always visible within their parent group
           const fullPath = parentPath ? `${parentPath} > ${item.title}` : item.title;
           items.push({
-            ...item,
+            title: item.title,
+            icon: item.icon,
             group: parentGroup || undefined,
-            fullPath
+            fullPath,
+            isStatic: true,
+          });
+        } else {
+          // Leaf item with permission check
+          const fullPath = parentPath ? `${parentPath} > ${item.title}` : item.title;
+          items.push({
+            title: item.title,
+            icon: item.icon,
+            href: item.href,
+            group: parentGroup || undefined,
+            fullPath,
+            isStatic: false,
           });
         }
       });
@@ -164,21 +186,29 @@ export function GlobalSearch() {
                 const Icon = item.icon;
                 return (
                   <CommandItem
-                    key={item.href}
+                    key={item.fullPath}
                     value={item.fullPath}
-                    onSelect={() => handleSelect(item.href)}
-                    className="flex items-center gap-3 px-3 py-2"
+                    onSelect={() => item.href ? handleSelect(item.href) : undefined}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2",
+                      item.isStatic && "opacity-60 cursor-default"
+                    )}
                   >
-                    <Icon className="h-4 w-4 text-muted-foreground" />
+                    {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
                     <div className="flex flex-col gap-0.5">
-                      <span className="font-medium">{item.title}</span>
+                      <span className={cn("font-medium", item.isStatic && "text-muted-foreground")}>{item.title}</span>
                       {item.group && (
                         <span className="text-xs text-muted-foreground">
                           {item.group}
                         </span>
                       )}
                     </div>
-                    <ArrowRight className="h-3 w-3 text-muted-foreground ml-auto" />
+                    {!item.isStatic && item.href && (
+                      <ArrowRight className="h-3 w-3 text-muted-foreground ml-auto" />
+                    )}
+                    {item.isStatic && (
+                      <span className="text-xs text-muted-foreground ml-auto italic">View only</span>
+                    )}
                   </CommandItem>
                 );
               })}
