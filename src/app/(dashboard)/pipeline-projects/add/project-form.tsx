@@ -137,13 +137,21 @@ export function ProjectForm() {
   return (
     <Form {...form}>
       <AppCard>
-        <AppCard.Header>
-          <AppCard.Title>Add Pipeline Project</AppCard.Title>
+        <AppCard.Header className="p-8 border-b border-slate-100 dark:border-white/5 bg-slate-50/30 dark:bg-slate-900/40">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <Plus className="w-5 h-5 text-white" strokeWidth={3} />
+            </div>
+            <div>
+              <AppCard.Title className="text-2xl font-black text-slate-950 dark:text-slate-50 tracking-tight">Add Strategic Project</AppCard.Title>
+              <p className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mt-1">Global Pipeline Pipeline Integration</p>
+            </div>
+          </div>
         </AppCard.Header>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
-          <AppCard.Content className="space-y-6">
+          <AppCard.Content className="space-y-10 p-8">
 
-            <FormSection legend="Pipeline Project Details">
+            <FormSection legend="Strategic Matrix Overview" className="border-blue-100/50 dark:border-blue-900/30">
               <FormRow cols={2}>
                 {/* Simulated disabled input matching UI mockup styling without strict TextInput restrictions */}
                 <div className="flex flex-col gap-2 col-span-12 lg:col-span-1">
@@ -154,7 +162,7 @@ export function ProjectForm() {
               </FormRow>
             </FormSection>
 
-            <FormSection legend="Clients Details">
+            <FormSection legend="Client Identification" className="border-blue-100/50 dark:border-blue-900/30">
               <FormRow cols={2}>
                 <SelectInput control={control} name="client" label="Client" options={[{ value: 'c1', label: 'Client 1' }]} placeholder="Enter Client" span={1} />
                 <SelectInput control={control} name="clientContactPerson" label="Contact Person" options={[{ value: 'p1', label: 'Person 1' }]} placeholder="Enter Contact Person" span={1} />
@@ -163,7 +171,7 @@ export function ProjectForm() {
               </FormRow>
             </FormSection>
 
-            <FormSection legend="Contact Details">
+            <FormSection legend="Communication Logistics" className="border-blue-100/50 dark:border-blue-900/30">
               <FormRow cols={3}>
                 <TextInput control={control} name="contactPerson" label="Contact Person" placeholder="Enter Contact Person" span={1} />
                 <TextInput control={control} name="mobile" label="Mobile" placeholder="Enter Mobile" span={1} />
@@ -171,7 +179,7 @@ export function ProjectForm() {
               </FormRow>
             </FormSection>
 
-            <FormSection legend="Site Address Details">
+            <FormSection legend="Deployment Site Geographics" className="border-blue-100/50 dark:border-blue-900/30">
               <FormRow>
                 <TextInput control={control} name="siteName" label="Site Name" placeholder="Enter Site Name" />
               </FormRow>
@@ -185,7 +193,7 @@ export function ProjectForm() {
               </FormRow>
             </FormSection>
 
-            <FormSection legend="Billing Address Details">
+            <FormSection legend="Financial Billing Nexus" className="border-blue-100/50 dark:border-blue-900/30">
               <FormRow>
                 <TextInput control={control} name="billingName" label="Billing" placeholder="Enter Billing Name" />
               </FormRow>
@@ -199,7 +207,7 @@ export function ProjectForm() {
               </FormRow>
             </FormSection>
 
-            <FormSection legend="Site and Construction Details">
+            <FormSection legend="Operational Analytics & Scoping" className="border-blue-100/50 dark:border-blue-900/30">
               <FormRow cols={2}>
                 <SelectInput control={control} name="feesType" label="Fees Type" options={[{ value: 'Percentage Basis', label: 'Percentage Basis' }]} span={1} />
               </FormRow>
@@ -248,17 +256,17 @@ export function ProjectForm() {
               </FormRow>
             </FormSection>
 
-            <FormSection legend="Note">
+            <FormSection legend="Strategic Narrative" className="border-blue-100/50 dark:border-blue-900/30">
               <FormRow>
                 <TextareaInput control={control} name="note" label="Additional Notes" placeholder="Write a note..." rows={4} />
               </FormRow>
             </FormSection>
 
             <FormRow cols={2}>
-              <FormSection legend="Inclusion">
+              <FormSection legend="Strategic Inclusions" className="border-blue-100/50 dark:border-blue-900/30">
                 <TextareaInput control={control} name="inclusion" label="Project Inclusions" placeholder="Inclusions..." rows={4} />
               </FormSection>
-              <FormSection legend="Exclusion">
+              <FormSection legend="Critical Exclusions" className="border-blue-100/50 dark:border-blue-900/30">
                 <TextareaInput control={control} name="exclusion" label="Project Exclusions" placeholder="Exclusions..." rows={4} />
               </FormSection>
             </FormRow>
@@ -267,18 +275,18 @@ export function ProjectForm() {
               <SelectInput control={control} name="preparedBy" label="Prepared By" options={[{ value: 'dp', label: 'Darpan Powale' }]} />
             </FormRow>
 
-            <FormSection legend="Tasks/Services">
-              <div className="border rounded-md overflow-hidden">
+            <FormSection legend="Execution Blueprint & Task Delegation" className="border-blue-100/50 dark:border-blue-900/30">
+              <div className="border border-slate-100 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl shadow-blue-500/5">
                 <table className="w-full text-sm">
-                  <thead className="bg-muted/50 border-b">
+                  <thead className="bg-blue-50/50 dark:bg-blue-900/20 border-b border-slate-100 dark:border-slate-800">
                     <tr>
-                      <th className="px-4 py-2 font-medium text-left">Task</th>
-                      <th className="px-4 py-2 font-medium text-left">Fees Type</th>
-                      <th className="px-4 py-2 font-medium text-left">Days Require</th>
-                      <th className="px-4 py-2 font-medium text-left">List Order</th>
-                      <th className="px-4 py-2 font-medium text-left">Percentage</th>
-                      <th className="px-4 py-2 font-medium text-left">Fees</th>
-                      <th className="px-4 py-2 font-medium text-center w-12">Action</th>
+                      <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] text-left">Task Designation</th>
+                      <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] text-left">Revenue Model</th>
+                      <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] text-left">Timeline</th>
+                      <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] text-left">Priority</th>
+                      <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] text-left">Impact %</th>
+                      <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] text-left">Value</th>
+                      <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] text-center w-12">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
@@ -311,9 +319,9 @@ export function ProjectForm() {
                     ))}
                   </tbody>
                 </table>
-                <div className="p-2 border-t">
-                  <button type="button" onClick={() => append({ task: '', feesType: '', days: '', order: '', percentage: '', fees: '' })} className="flex items-center text-sm text-primary hover:text-primary/80 font-medium">
-                    <Plus className="h-4 w-4 mr-1" /> Add Task
+                <div className="p-4 bg-slate-50/50 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800">
+                  <button type="button" onClick={() => append({ task: '', feesType: '', days: '', order: '', percentage: '', fees: '' })} className="flex items-center gap-2 text-[11px] text-blue-600 dark:text-blue-400 hover:text-blue-700 font-black uppercase tracking-widest transition-all">
+                    <Plus className="h-4 w-4" strokeWidth={3} /> Add Mission Critical Task
                   </button>
                 </div>
               </div>
@@ -363,23 +371,23 @@ export function ProjectForm() {
             </FormSection>
 
           </AppCard.Content>
-          <AppCard.Footer className="justify-end bg-muted/20 border-t mt-6">
+          <AppCard.Footer className="justify-end gap-3 p-8 bg-slate-50/30 dark:bg-slate-900/60 border-t border-slate-100 dark:border-white/5">
             <AppButton
               type="button"
               variant="secondary"
               onClick={() => router.push('/pipeline-projects')}
               disabled={submitting}
-              iconName="X"
+              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-black uppercase tracking-widest px-8 rounded-2xl h-12 shadow-sm"
             >
-              Cancel
+              Discard Changes
             </AppButton>
             <AppButton
               type="submit"
-              iconName="Save"
               isLoading={submitting}
               disabled={submitting}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest px-10 rounded-2xl h-12 shadow-xl shadow-blue-500/20 transition-all active:scale-[0.98]"
             >
-              Save Pipeline Project
+              Finalize Project Integration
             </AppButton>
           </AppCard.Footer>
         </form>

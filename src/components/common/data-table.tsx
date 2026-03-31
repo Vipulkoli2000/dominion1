@@ -37,6 +37,8 @@ export type DataTableProps<T extends object> = {
 	stickyHeader?: boolean;
 	noStriping?: boolean;
 	skeletonRows?: number;
+	/** Optional class for the thead element */
+	theadClassName?: string;
 	/** Number of leading data columns to make sticky on horizontal scroll */
 	stickyColumns?: number; // e.g. 2 => first two columns sticky
 	/** Minimum table width (px) before horizontal scroll. Defaults to 900 */
@@ -63,6 +65,7 @@ export function DataTable<T extends object>({
 	stickyHeader,
 	noStriping,
 	skeletonRows = 8,
+	theadClassName,
 	stickyColumns,
 	minTableWidth, // no default so it can shrink to container width unless explicitly set
 	simpleStyle,
@@ -176,7 +179,8 @@ export function DataTable<T extends object>({
 								simpleStyle
 									? 'bg-muted/30'
 									: 'bg-muted/40 backdrop-blur supports-[backdrop-filter]:bg-muted/30',
-								stickyHeader && 'sticky top-0 z-10'
+								stickyHeader && 'sticky top-0 z-10',
+								theadClassName
 							)}
 						>
 							<tr className='text-left'>

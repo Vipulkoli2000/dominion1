@@ -14,6 +14,7 @@ import { AppCard } from '../common/app-card';
 import { AppButton } from '../common/app-button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { cn } from "@/lib/utils";
 
 // --- Dummy Data ---
 // Overlapping Area Data (Quotations vs Invoices Counts)
@@ -240,32 +241,51 @@ export const DashboardCharts = () => {
           <AppCard.Content className="p-6 flex-grow">
             <div className="flex justify-between items-center mb-6">
               <SectionHeading title="Active Projects" description="High priority sites" />
-              <AppButton variant="ghost" size="sm" className="h-8 px-2 text-xs -mt-5">
+              <AppButton 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 px-3 text-[11px] font-bold text-indigo-600 bg-indigo-50/50 hover:bg-indigo-100 hover:text-indigo-700 transition-all border border-indigo-100/50 rounded-full -mt-5"
+              >
                 View All
               </AppButton>
             </div>
             <div className="flex flex-col gap-4">
               {recentProjects.map((proj) => (
-                <div key={proj.id} className="flex flex-col gap-3 p-3.5 bg-muted/30 rounded-lg border border-border/50 hover:bg-muted/70 transition-colors cursor-pointer group">
-                  <div className="flex justify-between items-center gap-2">
+                <motion.div 
+                  key={proj.id} 
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  className="flex flex-col gap-4 p-5 bg-white/40 backdrop-blur-md rounded-2xl border border-white/40 hover:bg-white/60 hover:border-indigo-100 transition-all cursor-pointer group shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 active:scale-95"
+                >
+                  <div className="flex justify-between items-start gap-4">
                     <div className="min-w-0">
-                      <h4 className="font-semibold text-sm text-foreground truncate">{proj.no}</h4>
-                      <p className="text-xs text-muted-foreground truncate">{proj.client}</p>
+                      <h4 className="font-extrabold text-sm text-slate-900 truncate group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{proj.no}</h4>
+                      <p className="text-[10px] font-black text-slate-400 truncate uppercase mt-0.5 tracking-widest">{proj.client}</p>
                     </div>
-                    <span className={`shrink-0 text-[10px] font-medium px-2 py-0.5 rounded-md ${
-                      proj.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' :
-                      proj.status === 'Warning' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' : 'bg-primary/10 text-primary'
-                      }`}>
+                    <span className={cn("shrink-0 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest shadow-sm",
+                      proj.status === 'Completed' ? 'bg-emerald-500 text-white' :
+                      proj.status === 'Progress' ? 'bg-indigo-500 text-white' : 'bg-slate-500 text-white'
+                    )}>
                       {proj.status}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex-grow h-1.5 bg-secondary rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full transition-all ${proj.progress === 100 ? 'bg-emerald-500' : 'bg-primary'}`} style={{ width: `${proj.progress}%` }} />
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-[10px] font-black text-slate-400">
+                      <span className="uppercase tracking-widest text-[9px]">Completion</span>
+                      <span className="text-indigo-600">{proj.progress}%</span>
                     </div>
-                    <span className="text-xs font-medium text-muted-foreground w-8 text-right">{proj.progress}%</span>
+                    <div className="h-1.5 w-full bg-slate-100/50 rounded-full overflow-hidden shadow-inner translate-z-0">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${proj.progress}%` }}
+                        transition={{ duration: 1.2, ease: "circOut" }}
+                        className={cn("h-full rounded-full relative shadow-sm", 
+                          proj.progress === 100 ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : 'bg-gradient-to-r from-indigo-400 to-violet-500'
+                        )}
+                      />
+                    </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </AppCard.Content>
@@ -280,23 +300,41 @@ export const DashboardCharts = () => {
                 <AreaChart data={performanceData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorQuots" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorInvs" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
-                  <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} tickMargin={10} />
-                  <YAxis tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: 'var(--background)', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '13px' }}
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fontStyle: 'bold', fill: '#94a3b8' }} axisLine={false} tickLine={false} tickMargin={10} />
+                  <YAxis tick={{ fontSize: 10, fontStyle: 'bold', fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', backdropFilter: 'blur(10px)', background: 'rgba(255,255,255,0.8)', padding: '12px' }}
                   />
-                  <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: '20px', fontSize: '12px' }} />
-                  <Area type="monotone" dataKey="quotations" name="Quotations Issued" stroke="var(--primary)" strokeWidth={2} fillOpacity={1} fill="url(#colorQuots)" />
-                  <Area type="monotone" dataKey="invoices" name="Invoices Paid" stroke="var(--chart-1)" strokeWidth={2} fillOpacity={1} fill="url(#colorInvs)" />
+                  <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: '20px', fontSize: '10px', fontStyle: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em' }} />
+                  <Area 
+                    type="monotone" 
+                    dataKey="quotations" 
+                    name="Quotations"
+                    stroke="#6366f1" 
+                    strokeWidth={4}
+                    fillOpacity={1} 
+                    fill="url(#colorQuots)"
+                    animationDuration={2000}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="invoices" 
+                    name="Invoices"
+                    stroke="#8b5cf6" 
+                    strokeWidth={4}
+                    fillOpacity={1} 
+                    fill="url(#colorInvs)"
+                    animationDuration={2500}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -315,15 +353,21 @@ export const DashboardCharts = () => {
             <div className="h-[280px] w-full mt-6">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={valuationData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }} barGap={0} barCategoryGap="20%">
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
-                  <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} tickMargin={10} />
-                  <YAxis tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
+                  <defs>
+                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#6366f1" />
+                      <stop offset="100%" stopColor="#4f46e5" />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fontStyle: 'bold', fill: '#94a3b8' }} axisLine={false} tickLine={false} tickMargin={10} />
+                  <YAxis tick={{ fontSize: 10, fontStyle: 'bold', fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                   <Tooltip
                     formatter={(val: number) => `₹ ${(val / 100000).toFixed(1)}L`}
-                    cursor={{ fill: 'var(--muted)' }}
-                    contentStyle={{ backgroundColor: 'var(--background)', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '13px' }}
+                    cursor={{ fill: 'rgba(99, 102, 241, 0.05)' }}
+                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', backdropFilter: 'blur(10px)', background: 'rgba(255,255,255,0.8)', padding: '12px' }}
                   />
-                  <Bar dataKey="amount" fill="var(--primary)" radius={[4, 4, 0, 0]}>
+                  <Bar dataKey="amount" fill="url(#barGradient)" radius={[8, 8, 0, 0]}>
                     {valuationData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fillOpacity={index === 5 ? 1 : 0.4} />
                     ))}

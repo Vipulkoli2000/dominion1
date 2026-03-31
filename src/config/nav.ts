@@ -75,10 +75,24 @@ export function isStatic(item: NavItem): item is NavStaticItem {
 
 export const NAV_ITEMS: NavItem[] = [
   {
+    type: "group",
     title: "Dashboard",
-    href: "/dashboard",
     icon: LayoutDashboard,
     permission: PERMISSIONS.VIEW_DASHBOARD,
+    children: [
+      {
+        title: "Admin",
+        href: "/dashboard",
+        icon: LayoutDashboard,
+        permission: PERMISSIONS.VIEW_DASHBOARD,
+      },
+      {
+        title: "Employee",
+        href: "/dashboard/employee",
+        icon: Users,
+        permission: PERMISSIONS.VIEW_DASHBOARD,
+      },
+    ],
   },
   {
     type: "group",
@@ -163,7 +177,7 @@ export const NAV_ITEMS: NavItem[] = [
       },
     ],
   },
-    {
+  {
     type: "group",
     title: "Design Drive",
     icon: FolderOpen,
@@ -191,7 +205,7 @@ export const NAV_ITEMS: NavItem[] = [
       },
     ],
   },
-   {
+  {
     type: "group",
     title: "Project Drive",
     icon: FolderOpen,
@@ -205,7 +219,7 @@ export const NAV_ITEMS: NavItem[] = [
       },
     ],
   },
- 
+
   {
     type: "group",
     title: "Invoicing",
@@ -217,7 +231,7 @@ export const NAV_ITEMS: NavItem[] = [
       { type: "static", title: "Service Invoices", icon: FileText },
     ],
   },
-   {
+  {
     type: "group",
     title: "Receipts",
     icon: Wallet,
@@ -227,9 +241,9 @@ export const NAV_ITEMS: NavItem[] = [
       { type: "static", title: "Service Receipts", icon: FileText },
     ],
   },
- 
- 
- 
+
+
+
   {
     type: "group",
     title: "Reports",

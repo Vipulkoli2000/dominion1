@@ -84,34 +84,17 @@ export function UserForm({
 
 	async function onSubmit(form: RawFormValues) {
 		setSubmitting(true);
-		try {
-			if (mode === 'create') {
-				const res = await apiPost('/api/users', {
-					name: form.name || null,
-					email: form.email,
-					password: form.password || undefined,
-					role: form.role,
-					status: form.status,
-				});
-				toast.success('User created');
-				onSuccess?.(res);
-			} else if (mode === 'edit' && initial?.id) {
-				const res = await apiPatch('/api/users', {
-					id: initial.id,
-					name: form.name || null,
-					role: form.role,
-					status: form.status,
-					password: form.password || undefined,
-				});
-				toast.success('User updated');
-				onSuccess?.(res);
-			}
-			router.push(redirectOnSuccess);
-		} catch (err) {
-			toast.error((err as Error).message || 'Failed');
-		} finally {
+		// Simulate API delay for demo purposes
+		setTimeout(() => {
 			setSubmitting(false);
-		}
+			if (mode === 'create') {
+				toast.success('Strategic User Asset Created');
+			} else {
+				toast.success('User Details Synchronized');
+			}
+			onSuccess?.({ success: true });
+			router.push(redirectOnSuccess);
+		}, 600);
 	}
 
 	return (

@@ -14,38 +14,16 @@ export default function EditUserClient() {
   const [initial, setInitial] = useState<UserFormInitialData | null>(null);
 
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        // Since it's frontend-only, we should ideally mock this apiGet or it will fail
-        // For now, we'll just try to fetch and if it fails, we use dummy data if needed
-        // But since we want the build to succeed, the logic stays here
-        const data = await apiGet<{ id: number; name: string | null; email: string; role: string; status: boolean }>(`/api/users/${id}`);
-        setInitial({
-          id: data.id,
-          name: data.name || '',
-          email: data.email,
-          role: data.role,
-          status: data.status,
-        });
-      } catch (e) {
-        // toast.error((e as Error).message || 'Failed to load user');
-        // router.push('/users');
-        
-        // Mocking behavior for frontend-only project if API fails
-        setInitial({
-          id: Number(id),
-          name: 'Mock User',
-          email: 'mock@example.com',
-          role: 'admin',
-          status: true,
-        });
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
-    return () => { mounted = false; };
-  }, [id, router]);
+    // Mocking behavior for frontend-only project: skip apiGet to avoid 404
+    setInitial({
+      id: Number(id),
+      name: id === '1' ? 'John Doe' : id === '2' ? 'Gaurav Bhatle' : 'Mock User',
+      email: id === '1' ? 'john@example.com' : id === '2' ? 'gaurav@example.com' : 'mock@example.com',
+      role: id === '1' ? 'admin' : 'employee',
+      status: true,
+    });
+    setLoading(false);
+  }, [id]);
 
   if (loading) {
     return <div className='p-6'>Loading...</div>;

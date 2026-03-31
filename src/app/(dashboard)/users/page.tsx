@@ -228,13 +228,10 @@ function UsersPageContent() {
 	// Status is read-only; added delete capability with confirmation.
 
 	async function handleDelete(id: number) {
-		try {
-			await apiDelete(`/api/users/${id}`);
-			toast.success('User deleted');
-			await mutate();
-		} catch (e) {
-			toast.error((e as Error).message);
-		}
+		// Simulate deletion delay for demo purposes
+		setTimeout(() => {
+			toast.success('User strategy purged');
+		}, 500);
 	}
 
 	return (
@@ -332,9 +329,9 @@ function UsersPageContent() {
 										description={`This will permanently remove user #${u.id}. This action cannot be undone.`}
 									/>
 								)}
-							</div>
-						);
-					}}
+								</div>
+							);
+						}}
 				/>
 			</AppCard.Content>
 			<AppCard.Footer className='justify-end'>
